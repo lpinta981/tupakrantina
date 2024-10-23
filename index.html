@@ -6,6 +6,7 @@
     <title>Formulario Multisección</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
+        /* Estilos existentes */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f3f4f6;
@@ -26,6 +27,94 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
+
+        /* Nuevos estilos para la página de bienvenida */
+        #welcomeSection {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #welcomeSection img {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 30px;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        .welcome-line {
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(41,128,185,0.1) 0%, rgba(41,128,185,1) 50%, rgba(41,128,185,0.1) 100%);
+            margin: 20px auto;
+            box-shadow: 0 2px 10px rgba(41,128,185,0.3);
+            animation: expandWidth 1.5s ease-out;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin: 20px 0;
+            font-weight: bold;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            color: #34495e;
+            line-height: 1.6;
+            margin: 20px 0 30px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .welcome-button {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease-out 1.5s both;
+            box-shadow: 0 4px 15px rgba(41,128,185,0.2);
+        }
+
+        .welcome-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(41,128,185,0.3);
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 60%; }
+        }
+
+        .slide-out {
+            animation: slideOutLeft 0.5s forwards;
+        }
+
+        .slide-in {
+            animation: slideInRight 0.5s forwards;
+        }
+
+        @keyframes slideOutLeft {
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
 
         h1 {
             color: #2c3e50;
@@ -197,8 +286,18 @@
 </head>
 <body>
     <div class="container">
+
+         <!-- Nueva página de bienvenida -->
+        <div id="welcomeSection">
+            <img src="https://i.postimg.cc/kDrmdkK3/TRANSPARENTE.jpg" alt="Tupak Rantina Logo" class="animate__animated animate__fadeIn">
+            <div class="welcome-line"></div>
+            <h1 class="welcome-title">BIENVENIDO/A</h1>
+            <p class="welcome-text">Tupak Rantina te da la bienvenida a nuestro sistema de solicitudes de crédito, será un placer servirte.</p>
+            <button class="welcome-button" onclick="goToPersonalSection()">SOLICITA TU CRÉDITO</button>
+        </div>
+
         <!-- Primera página - Información Personal (sin cambios) -->
-          <div id="personalSection">
+          <div id="personalSection" class="hidden">
             <h1>¡Bienvenido! Vamos a llenar tu información personal</h1>
             <form id="personalForm">
                 <div class="form-group">
@@ -367,6 +466,16 @@
     </div>
 
    <script>
+
+     function goToPersonalSection() {
+            document.getElementById('welcomeSection').classList.add('slide-out');
+            setTimeout(() => {
+                document.getElementById('welcomeSection').classList.add('hidden');
+                document.getElementById('personalSection').classList.remove('hidden');
+                document.getElementById('personalSection').classList.add('slide-in');
+            }, 500);
+        }
+
     // Función para pasar de la página de información personal a la página de contacto
     function goToContactPage() {
         // Validar el formulario antes de avanzar
