@@ -3,9 +3,637 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hola Mundo</title>
+    <title>Formulario Multisección</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1e1e1e;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            border-color: #2980b9;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.3);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .file-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            background-color: #f7f7f7;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            opacity: 0.5;
+        }
+
+        .example-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-file {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-file:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            display: none;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-next, .btn-prev {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-next:hover, .btn-prev:hover {
+            background: #1f6391;
+        }
+
+        .btn-prev {
+            background: #7f8c8d;
+        }
+
+        .btn-prev:hover {
+            background: #5e6d71;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            button {
+                padding: 12px;
+            }
+
+            input, select {
+                padding: 12px;
+            }
+
+            .btn-file, .btn-delete {
+                padding: 8px 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hola Mundo</h1>
+    <div class="container">
+        <!-- Primera página - Información Personal (sin cambios) -->
+          <div id="personalSection">
+            <h1>¡Bienvenido! Vamos a llenar tu información personal</h1>
+            <form id="personalForm">
+                <div class="form-group">
+                    <label for="fullName">Apellidos y nombres completos (Como aparece en tu cédula):</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="EJ: APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2" required>
+                    <div class="error" id="fullNameError">Este campo es requerido</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cedula">Número de Cédula (Unicamente válido número de cédula):</label>
+                    <input type="text" id="cedula" name="cedula" placeholder="EJ: 172754102" required>
+                    <div class="error" id="cedulaError">La cédula debe tener 10 dígitos numéricos</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Dirección de domicilio:</label>
+                    <input type="text" id="address" name="address" placeholder="EJ: 15 Grand Street Fairport, NY 14450" required>
+                    <div class="error" id="addressError">Este campo es requerido</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comprobante de domicilio (Debe coincidir con la dirección puesta antes):</label>
+                    <div class="file-preview" id="proofAddressPreview">
+                        <img src="https://www.wikihow.com/images_en/thumb/6/66/Write-a-Return-Address-Step-11.jpg/v4-1200px-Write-a-Return-Address-Step-11.jpg" alt="Ejemplo de comprobante de domicilio" />
+                        <span class="example-text" id="proofAddressText">EJEMPLO DE COMPROBANTE DE DOMICILIO</span>
+                    </div>
+                    <input type="file" id="proofAddress" name="proofAddress" accept="image/*" class="file-input" onchange="previewImage(this, 'proofAddressPreview', 'proofAddressText', 'proofAddressDeleteBtn')">
+                    <button type="button" class="btn-file" onclick="document.getElementById('proofAddress').click();">Subir imagen</button>
+                    <button type="button" class="btn-delete" id="proofAddressDeleteBtn" onclick="clearImage('proofAddress', 'proofAddressPreview', 'proofAddressText', 'proofAddressDeleteBtn')">Borrar</button>
+                    <div class="error" id="proofAddressError">Debe subir un comprobante</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Documento de identidad (Puede ser cédula o pasaporte):</label>
+                    <div class="file-preview" id="idDocumentPreview">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/C%C3%A9dula_electr%C3%B3nica_Ecuador_%28Enero_2021%29.png/320px-C%C3%A9dula_electr%C3%B3nica_Ecuador_%28Enero_2021%29.png" alt="Ejemplo de documento de identidad" />
+                        <span class="example-text" id="idDocumentText">EJEMPLO DE DOCUMENTO DE IDENTIDAD</span>
+                    </div>
+                    <input type="file" id="idDocument" name="idDocument" accept="image/*" class="file-input" onchange="previewImage(this, 'idDocumentPreview', 'idDocumentText', 'idDocumentDeleteBtn')">
+                    <button type="button" class="btn-file" onclick="document.getElementById('idDocument').click();">Subir imagen</button>
+                    <button type="button" class="btn-delete" id="idDocumentDeleteBtn" onclick="clearImage('idDocument', 'idDocumentPreview', 'idDocumentText', 'idDocumentDeleteBtn')">Borrar</button>
+                    <div class="error" id="idDocumentError">Debe subir un documento</div>
+                </div>
+
+                <button type="button" class="btn-next" onclick="goToContactPage()">Siguiente</button>
+            </form>
+        </div>
+
+        <!-- Segunda página - Datos de Contacto (corregida) -->
+        <div id="contactSection" class="hidden">
+            <h1>Ahora llenemos tus datos de contacto</h1>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="whatsapp">Número de WhatsApp (Sin signos ni prefijos, SOLO NÚMERO):</label>
+                    <input type="text" id="whatsapp" name="whatsapp" placeholder="EJ: 9854721542" required>
+                    <div class="error" id="whatsappError">El número de WhatsApp debe tener solo números y mínimo 8 dígitos</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">País de residencia: (Donde vives)</label>
+                    <select id="country" name="country" required>
+                        <option value="" disabled selected>Seleccione uno...</option>
+                        <option value="Ecuador">Ecuador</option>
+                        <option value="Perú">Perú</option>
+                        <option value="Estados Unidos">Estados Unidos</option>
+                    </select>
+                    <div class="error" id="countryError">Este campo es requerido</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="civilStatus">Estado civil:</label>
+                    <select id="civilStatus" name="civilStatus" required onchange="showPartnerSection()">
+                        <option value="" disabled selected>Seleccione uno...</option>
+                        <option value="Soltero/a">Soltero/a</option>
+                        <option value="Casado/a">Casado/a</option>
+                        <option value="Unión libre">Unión libre</option>
+                        <option value="Divorciado/a">Divorciado/a</option>
+                        <option value="Viudo/a">Viudo/a</option>
+                    </select>
+                    <div class="error" id="civilStatusError">Este campo es requerido</div>
+                </div>
+
+                <!-- Información adicional si es Casado/a o Unión libre -->
+                <div class="form-group hidden" id="partnerSection">
+                    <h2>Información del Cónyuge o Pareja</h2>
+                    
+                    <div class="form-group">
+                        <label for="partnerName">Nombre completo del cónyuge/pareja (Como aparece en su cédula):</label>
+                        <input type="text" id="partnerName" name="partnerName" placeholder="APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2">
+                        <div class="error" id="partnerNameError">Este campo es requerido</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="partnerCountry">País de residencia del cónyuge/pareja:</label>
+                        <select id="partnerCountry" name="partnerCountry">
+                            <option value="" disabled selected>Seleccione uno...</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="Perú">Perú</option>
+                            <option value="Estados Unidos">Estados Unidos</option>
+                        </select>
+                        <div class="error" id="partnerCountryError">Este campo es requerido</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="partnerWhatsapp">Número de WhatsApp del cónyuge/pareja (Sin signos ni prefijos, SOLO NÚMERO):</label>
+                        <input type="text" id="partnerWhatsapp" name="partnerWhatsapp" placeholder="EJ: 9854721542">
+                        <div class="error" id="partnerWhatsappError">Este campo es requerido</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subir foto del documento de identidad del cónyuge o pareja:</label>
+                        <div class="file-preview" id="partnerDocumentPreview">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWXlvq8y8et8mwK73Geg3CngTsSCOBc9n3Ow&s" alt="Ejemplo de documento de identidad del cónyuge" />
+                            <span class="example-text" id="partnerDocumentText">EJEMPLO DE DOCUMENTO DE IDENTIDAD DEL CÓNYUGE</span>
+                        </div>
+                        <input type="file" id="partnerDocument" name="partnerDocument" accept="image/*" class="file-input" onchange="previewImage(this, 'partnerDocumentPreview', 'partnerDocumentText', 'partnerDocumentDeleteBtn')">
+                        <button type="button" class="btn-file" onclick="document.getElementById('partnerDocument').click();">Subir imagen</button>
+                        <button type="button" class="btn-delete" id="partnerDocumentDeleteBtn" onclick="clearImage('partnerDocument', 'partnerDocumentPreview', 'partnerDocumentText', 'partnerDocumentDeleteBtn')">Borrar</button>
+                        <div class="error" id="partnerDocumentError">Debe subir un documento</div>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación para la sección de contacto -->
+                <div class="navigation-buttons">
+                    <button type="button" class="btn-prev" onclick="goToPersonalPage()">Anterior</button>
+                    <button type="submit" class="btn-next">Siguiente</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tercera Página - Referencia No Familiar -->
+        <div id="referenceSection" class="hidden">
+            <h1>Información de una Referencia NO FAMILIAR</h1>
+            <form id="referenceForm">
+                <div class="form-group">
+                    <label for="referenceName">Nombre completo de la referencia (Como aparece en su cédula):</label>
+                    <input type="text" id="referenceName" name="referenceName" placeholder="APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2" required>
+                    <div class="error" id="referenceNameError">Este campo es requerido</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="referenceWhatsapp">Número de WhatsApp de la referencia (Sin signos ni prefijos, SOLO NÚMERO):</label>
+                    <input type="text" id="referenceWhatsapp" name="referenceWhatsapp" placeholder="EJ: 9854721542" required>
+                    <div class="error" id="referenceWhatsappError">El número de WhatsApp debe tener solo números y mínimo 8 dígitos</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Documento de identidad de la referencia (Puede ser cédula o pasaporte):</label>
+                    <div class="file-preview" id="referenceDocumentPreview">
+                        <img src="https://i.postimg.cc/8c5F6Vr8/image.jpg" alt="Ejemplo de documento de identidad de referencia" />
+                        <span class="example-text" id="referenceDocumentText">EJEMPLO DE DOCUMENTO DE IDENTIDAD DE REFERENCIA</span>
+                    </div>
+                    <input type="file" id="referenceDocument" name="referenceDocument" accept="image/*" class="file-input" onchange="previewImage(this, 'referenceDocumentPreview', 'referenceDocumentText', 'referenceDocumentDeleteBtn')">
+                    <button type="button" class="btn-file" onclick="document.getElementById('referenceDocument').click();">Subir imagen</button>
+                    <button type="button" class="btn-delete" id="referenceDocumentDeleteBtn" onclick="clearImage('referenceDocument', 'referenceDocumentPreview', 'referenceDocumentText', 'referenceDocumentDeleteBtn')">Borrar</button>
+                    <div class="error" id="referenceDocumentError">Debe subir un documento</div>
+                </div>
+
+                <!-- Botones de navegación para la sección de referencia -->
+                <div class="navigation-buttons">
+                    <button type="button" class="btn-prev" onclick="goToContactPage()">Anterior</button>
+                    <button type="submit" class="btn-next">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   <script>
+    // Función para pasar de la página de información personal a la página de contacto
+    function goToContactPage() {
+        // Validar el formulario antes de avanzar
+        let isValid = validatePersonalForm();
+
+        if (isValid) {
+            document.getElementById('personalSection').classList.add('hidden');
+            document.getElementById('contactSection').classList.remove('hidden');
+        }
+    }
+
+    // Función para regresar de la página de contacto a la página de información personal
+    function goToPersonalPage() {
+        document.getElementById('contactSection').classList.add('hidden');
+        document.getElementById('personalSection').classList.remove('hidden');
+    }
+
+    // Función para mostrar la sección del cónyuge/pareja si el estado civil es "Casado/a" o "Unión libre"
+    function showPartnerSection() {
+        const civilStatus = document.getElementById('civilStatus').value;
+        const partnerSection = document.getElementById('partnerSection');
+
+        if (civilStatus === "Casado/a" || civilStatus === "Unión libre") {
+            partnerSection.classList.remove('hidden');
+        } else {
+            partnerSection.classList.add('hidden');
+            // Limpiar los mensajes de error cuando se oculta la sección
+            document.getElementById('partnerNameError').style.display = 'none';
+            document.getElementById('partnerCountryError').style.display = 'none';
+            document.getElementById('partnerWhatsappError').style.display = 'none';
+            document.getElementById('partnerDocumentError').style.display = 'none';
+            
+            // Limpiar los campos del formulario
+            document.getElementById('partnerName').value = '';
+            document.getElementById('partnerCountry').value = '';
+            document.getElementById('partnerWhatsapp').value = '';
+            document.getElementById('partnerDocument').value = '';
+            
+            // Restaurar la imagen placeholder del documento
+            clearImage('partnerDocument', 'partnerDocumentPreview', 'partnerDocumentText', 'partnerDocumentDeleteBtn');
+        }
+    }
+
+    // Validar formulario de información personal
+    function validatePersonalForm() {
+        let isValid = true;
+
+        // Validar nombre completo
+        const fullName = document.getElementById('fullName').value;
+        if (!fullName) {
+            document.getElementById('fullNameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('fullNameError').style.display = 'none';
+        }
+
+        // Validar cédula
+        const cedula = document.getElementById('cedula').value;
+        if (!cedula.match(/^\d{10}$/)) {
+            document.getElementById('cedulaError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('cedulaError').style.display = 'none';
+        }
+
+        // Validar dirección
+        const address = document.getElementById('address').value;
+        if (!address) {
+            document.getElementById('addressError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('addressError').style.display = 'none';
+        }
+
+        // Validar comprobante de domicilio
+        const proofAddress = document.getElementById('proofAddress').files.length;
+        if (!proofAddress) {
+            document.getElementById('proofAddressError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('proofAddressError').style.display = 'none';
+        }
+
+        // Validar documento de identidad
+        const idDocument = document.getElementById('idDocument').files.length;
+        if (!idDocument) {
+            document.getElementById('idDocumentError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('idDocumentError').style.display = 'none';
+        }
+
+        return isValid;
+    }
+
+    // Función para validar el formulario de contacto
+    function validateContactForm() {
+        let isValid = true;
+
+        // Validar WhatsApp (debe ser solo números y tener al menos 8 dígitos)
+        const whatsapp = document.getElementById('whatsapp').value;
+        if (!whatsapp || !whatsapp.match(/^\d{8,}$/)) {
+            document.getElementById('whatsappError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('whatsappError').style.display = 'none';
+        }
+
+        // Validar país
+        const country = document.getElementById('country').value;
+        if (!country) {
+            document.getElementById('countryError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('countryError').style.display = 'none';
+        }
+
+        // Validar estado civil
+        const civilStatus = document.getElementById('civilStatus').value;
+        if (!civilStatus) {
+            document.getElementById('civilStatusError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('civilStatusError').style.display = 'none';
+        }
+
+        // Si es casado/a o unión libre, validar información del cónyuge
+        if (civilStatus === "Casado/a" || civilStatus === "Unión libre") {
+            // Validar nombre del cónyuge
+            const partnerName = document.getElementById('partnerName').value;
+            if (!partnerName) {
+                document.getElementById('partnerNameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('partnerNameError').style.display = 'none';
+            }
+
+            // Validar país del cónyuge
+            const partnerCountry = document.getElementById('partnerCountry').value;
+            if (!partnerCountry) {
+                document.getElementById('partnerCountryError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('partnerCountryError').style.display = 'none';
+            }
+
+            // Validar WhatsApp del cónyuge
+            const partnerWhatsapp = document.getElementById('partnerWhatsapp').value;
+            if (!partnerWhatsapp) {
+                document.getElementById('partnerWhatsappError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('partnerWhatsappError').style.display = 'none';
+            }
+
+            // Validar documento del cónyuge
+            const partnerDocument = document.getElementById('partnerDocument').files.length;
+            if (!partnerDocument) {
+                document.getElementById('partnerDocumentError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('partnerDocumentError').style.display = 'none';
+            }
+        }
+
+        return isValid;
+    }
+
+    // Validar formulario de referencia
+    function validateReferenceForm() {
+        let isValid = true;
+
+        // Validar nombre de la referencia
+        const referenceName = document.getElementById('referenceName').value;
+        if (!referenceName) {
+            document.getElementById('referenceNameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('referenceNameError').style.display = 'none';
+        }
+
+        // Validar WhatsApp de la referencia
+        const referenceWhatsapp = document.getElementById('referenceWhatsapp').value;
+        if (!referenceWhatsapp || !referenceWhatsapp.match(/^\d{8,}$/)) {
+            document.getElementById('referenceWhatsappError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('referenceWhatsappError').style.display = 'none';
+        }
+
+        // Validar documento de la referencia
+        const referenceDocument = document.getElementById('referenceDocument').files.length;
+        if (!referenceDocument) {
+            document.getElementById('referenceDocumentError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('referenceDocumentError').style.display = 'none';
+        }
+
+        return isValid;
+    }
+
+    // Previsualizar imágenes cargadas
+    function previewImage(input, previewId, textId, deleteBtnId) {
+        const preview = document.getElementById(previewId);
+        const text = document.getElementById(textId);
+        const deleteBtn = document.getElementById(deleteBtnId);
+        const file = input.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = preview.querySelector('img');
+                img.src = e.target.result;
+                img.style.opacity = "1";  // Remover opacidad al cargar imagen
+                text.style.display = "none";  // Ocultar texto de ejemplo
+                deleteBtn.style.display = "inline-block";  // Mostrar botón de borrar
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Limpiar la imagen cargada y restaurar el placeholder
+    function clearImage(inputId, previewId, textId, deleteBtnId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const text = document.getElementById(textId);
+        const deleteBtn = document.getElementById(deleteBtnId);
+
+        input.value = '';  // Limpiar el input file
+        const img = preview.querySelector('img');
+        img.src = '';  // Eliminar la imagen cargada
+        text.style.display = "block";  // Mostrar texto de ejemplo
+        deleteBtn.style.display = "none";  // Ocultar botón de borrar
+
+        // Restaurar el placeholder original según el tipo de documento
+        if (inputId === 'proofAddress') {
+            img.src = "https://www.wikihow.com/images_en/thumb/6/66/Write-a-Return-Address-Step-11.jpg/v4-1200px-Write-a-Return-Address-Step-11.jpg";
+            img.style.opacity = "0.5";
+        } else if (inputId === 'idDocument') {
+            img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/C%C3%A9dula_electr%C3%B3nica_Ecuador_%28Enero_2021%29.png/320px-C%C3%A9dula_electr%C3%B3nica_Ecuador_%28Enero_2021%29.png";
+            img.style.opacity = "0.5";
+        } else if (inputId === 'partnerDocument') {
+            img.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWXlvq8y8et8mwK73Geg3CngTsSCOBc9n3Ow&s";
+            img.style.opacity = "0.5";
+        } else if (inputId === 'referenceDocument') {
+            img.src = "https://i.postimg.cc/8c5F6Vr8/image.jpg";
+            img.style.opacity = "0.5";
+        }
+    }
+
+    // Event listeners para los formularios
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateContactForm()) {
+            document.getElementById('contactSection').classList.add('hidden');
+            document.getElementById('referenceSection').classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('referenceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateReferenceForm()) {
+            // Aquí puedes agregar el código para enviar el formulario completo
+            console.log('Formulario completo válido - Listo para enviar');
+        }
+    });
+</script>
 </body>
 </html>
