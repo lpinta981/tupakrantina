@@ -104,32 +104,56 @@
             to { width: 60%; }
         }
 
-        .slide-out {
-            animation: slideOutLeft 0.5s forwards;
-        }
-
-        .slide-in {
-            animation: slideInRight 0.5s forwards;
-        }
-
         @keyframes slideOutLeft {
-            to {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-        }
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
 
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
+#assetsSection {
+    position: relative;
+    width: 100%;
+}
+
+.slide-in {
+    animation: slideInRight 0.5s forwards;
+    position: relative;
+}
+
+.slide-out {
+    animation: slideOutLeft 0.5s forwards;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
 
         h1 {
             color: #2c3e50;
@@ -297,6 +321,18 @@
                 padding: 8px 16px;
             }
         }
+
+        .text-warning {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.camera-instructions {
+    color: #34495e;
+    font-size: 14px;
+    margin: 8px 0;
+    font-style: italic;
+}
     </style>
 </head>
 <body>
@@ -471,52 +507,309 @@
                     <div class="error" id="referenceDocumentError">Debe subir un documento</div>
                 </div>
 
-                <!-- Botones de navegación para la sección de referencia -->
-                <div class="navigation-buttons">
-                    <button type="button" class="btn-prev" onclick="goToContactPage()">Anterior</button>
-                    <button type="submit" class="btn-next">Enviar</button>
-                </div>
+<!-- Botones de navegación para la sección de referencia -->
+<div class="navigation-buttons">
+    <button type="button" class="btn-prev" onclick="goBackToContactPage()">Anterior</button>
+    <button type="submit" class="btn-next">Siguiente</button>
+</div>
             </form>
         </div>
+    
+
+    <!-- Cuarta Página - Información sobre Bienes y Firmas -->
+<div id="assetsSection" class="hidden">
+    <h1>Información sobre Bienes y Firmas</h1>
+    <form id="assetsForm">
+        <div class="form-group">
+            <label for="propertyName">Bienes A NOMBRE del solicitante:</label>
+            <input type="text" id="propertyName" name="propertyName" placeholder="EJ: Casa de 2 pisos" required>
+            <div class="error" id="propertyNameError">Este campo es requerido</div>
+        </div>
+
+        <div class="form-group">
+            <label>Subir foto que demuestre la posesión del bien (Título de la propiedad, pago de impuesto o seguro):</label>
+            <div class="file-preview" id="propertyDocumentPreview">
+                <img src="https://i.ytimg.com/vi/6eCnYN9jcUY/maxresdefault.jpg" alt="Ejemplo de documento de propiedad" />
+                <span class="example-text" id="propertyDocumentText">EJEMPLO DE DOCUMENTO DE PROPIEDAD</span>
+            </div>
+            <input type="file" id="propertyDocument" name="propertyDocument" accept="image/*" class="file-input" onchange="previewImage(this, 'propertyDocumentPreview', 'propertyDocumentText', 'propertyDocumentDeleteBtn')">
+            <button type="button" class="btn-file" onclick="document.getElementById('propertyDocument').click();">Subir imagen</button>
+            <button type="button" class="btn-delete" id="propertyDocumentDeleteBtn" onclick="clearImage('propertyDocument', 'propertyDocumentPreview', 'propertyDocumentText', 'propertyDocumentDeleteBtn')">Borrar</button>
+            <div class="error" id="propertyDocumentError">Debe subir un documento</div>
+        </div>
+
+        <div class="form-group">
+            <label>Subir foto de la firma del solicitante que se vea claramente (En papel blanco, esfero negro y lo más parecido a la firma de la cédula):</label>
+            <div class="file-preview" id="signaturePreview">
+                <img src="https://i.pinimg.com/736x/8e/6e/76/8e6e766676216436b2fce90b8326fd81.jpg" alt="Ejemplo de firma" />
+                <span class="example-text" id="signatureText">EJEMPLO DE FIRMA</span>
+            </div>
+            <input type="file" id="signature" name="signature" accept="image/*" class="file-input" onchange="previewImage(this, 'signaturePreview', 'signatureText', 'signatureDeleteBtn')">
+            <button type="button" class="btn-file" onclick="document.getElementById('signature').click();">Subir imagen</button>
+            <button type="button" class="btn-delete" id="signatureDeleteBtn" onclick="clearImage('signature', 'signaturePreview', 'signatureText', 'signatureDeleteBtn')">Borrar</button>
+            <div class="error" id="signatureError">Debe subir la firma</div>
+        </div>
+
+        <div class="form-group hidden" id="partnerSignatureSection">
+            <label>Subir foto de la firma del cónyuge o pareja que se vea claramente (En papel blanco, esfero negro y lo más parecido a la firma de la cédula):</label>
+            <div class="file-preview" id="partnerSignaturePreview">
+                <img src="https://www.consumer.es/app/uploads/fly-images/110784/img_firma-3-1200x550-cc.jpg" alt="Ejemplo de firma del cónyuge" />
+                <span class="example-text" id="partnerSignatureText">EJEMPLO DE FIRMA DEL CÓNYUGE</span>
+            </div>
+            <input type="file" id="partnerSignature" name="partnerSignature" accept="image/*" class="file-input" onchange="previewImage(this, 'partnerSignaturePreview', 'partnerSignatureText', 'partnerSignatureDeleteBtn')">
+            <button type="button" class="btn-file" onclick="document.getElementById('partnerSignature').click();">Subir imagen</button>
+            <button type="button" class="btn-delete" id="partnerSignatureDeleteBtn" onclick="clearImage('partnerSignature', 'partnerSignaturePreview', 'partnerSignatureText', 'partnerSignatureDeleteBtn')">Borrar</button>
+            <div class="error" id="partnerSignatureError">Debe subir la firma del cónyuge</div>
+        </div>
+
+        <!-- Botones de navegación para la sección de bienes -->
+        <div class="navigation-buttons">
+            <button type="button" class="btn-prev" onclick="goBackToReferenceSection()">Anterior</button>
+            <button type="submit" class="btn-next">Siguiente</button>
+        </div>
+    </form>
+</div>
+
+<!-- Quinta Página - Solicitud de Préstamo -->
+<div id="loanSection" class="hidden">
+    <h1>Solicitud de Préstamo</h1>
+    <form id="loanForm">
+        <div class="form-group">
+            <label for="loanAmount">Monto solicitado (Sin signos, sin acortar, pon el monto completo):</label>
+            <input type="text" id="loanAmount" name="loanAmount" placeholder="EJ: 5000" required>
+            <div class="error" id="loanAmountError">Este campo es requerido</div>
+        </div>
+
+<div class="form-group">
+    <label class="text-warning">Tomar foto sosteniendo el documento de identidad (Debes tomar la foto en este momento con tu cámara frontal, no se permite seleccionar de la galería):</label>
+    <div class="file-preview" id="selfieDocumentPreview">
+        <img src="https://gadmaapps.ambato.gob.ec:9001/apex/gadmapps/r/102/files/static/v250/selfiecedula.jpg" alt="Ejemplo de selfie con documento" />
+        <span class="example-text" id="selfieDocumentText">EJEMPLO DE SELFIE CON DOCUMENTO</span>
     </div>
+    <input type="file" id="selfieDocument" name="selfieDocument" accept="image/*" capture="user" class="file-input" onchange="previewImage(this, 'selfieDocumentPreview', 'selfieDocumentText', 'selfieDocumentDeleteBtn')" capture>
+    <div class="camera-instructions">
+        <i>Nota: Se abrirá tu cámara frontal para tomar la foto en este momento.</i>
+    </div>
+    <button type="button" class="btn-file" onclick="document.getElementById('selfieDocument').click();">Tomar foto con cámara frontal</button>
+    <button type="button" class="btn-delete" id="selfieDocumentDeleteBtn" onclick="clearImage('selfieDocument', 'selfieDocumentPreview', 'selfieDocumentText', 'selfieDocumentDeleteBtn')">Borrar</button>
+    <div class="error" id="selfieDocumentError">Debe tomar la foto con la cámara frontal</div>
+</div>
 
+        <!-- Botones de navegación para la sección de préstamo -->
+        <div class="navigation-buttons">
+            <button type="button" class="btn-prev" onclick="goBackToAssetsSection()">Anterior</button>
+            <button type="submit" class="btn-next">Finalizar</button>
+        </div>
+    </form>
+</div>
+</div>
    <script>
+// Primero todas las funciones de navegación y validación
+function goToAssetsSection() {
+    const referenceSection = document.getElementById('referenceSection');
+    const assetsSection = document.getElementById('assetsSection');
+    
+    referenceSection.classList.add('slide-out');
+    referenceSection.addEventListener('animationend', function handler() {
+        referenceSection.removeEventListener('animationend', handler);
+        referenceSection.classList.add('hidden');
+        referenceSection.classList.remove('slide-out');
+        
+        assetsSection.classList.remove('hidden');
+        assetsSection.classList.add('slide-in');
+        
+        assetsSection.addEventListener('animationend', function handler2() {
+            assetsSection.removeEventListener('animationend', handler2);
+            assetsSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
 
-     function goToPersonalSection() {
-            document.getElementById('welcomeSection').classList.add('slide-out');
-            setTimeout(() => {
-                document.getElementById('welcomeSection').classList.add('hidden');
-                document.getElementById('personalSection').classList.remove('hidden');
-                document.getElementById('personalSection').classList.add('slide-in');
-            }, 500);
-        }
+// Función para ir a la sección de préstamo
+function goToLoanSection() {
+    const assetsSection = document.getElementById('assetsSection');
+    const loanSection = document.getElementById('loanSection');
+    
+    assetsSection.classList.add('slide-out');
+    assetsSection.addEventListener('animationend', function handler() {
+        assetsSection.removeEventListener('animationend', handler);
+        assetsSection.classList.add('hidden');
+        assetsSection.classList.remove('slide-out');
+        
+        loanSection.classList.remove('hidden');
+        loanSection.classList.add('slide-in');
+        
+        loanSection.addEventListener('animationend', function handler2() {
+            loanSection.removeEventListener('animationend', handler2);
+            loanSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
 
-    // Función para pasar de la página de información personal a la página de contacto
-    function goToContactPage() {
-        // Validar el formulario antes de avanzar
-        let isValid = validatePersonalForm();
+// Función para regresar a la sección de bienes
+function goBackToAssetsSection() {
+    const loanSection = document.getElementById('loanSection');
+    const assetsSection = document.getElementById('assetsSection');
+    
+    loanSection.classList.add('slide-out');
+    loanSection.addEventListener('animationend', function handler() {
+        loanSection.removeEventListener('animationend', handler);
+        loanSection.classList.add('hidden');
+        loanSection.classList.remove('slide-out');
+        
+        assetsSection.classList.remove('hidden');
+        assetsSection.classList.add('slide-in');
+        
+        assetsSection.addEventListener('animationend', function handler2() {
+            assetsSection.removeEventListener('animationend', handler2);
+            assetsSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
 
-        if (isValid) {
-            document.getElementById('personalSection').classList.add('hidden');
-            document.getElementById('contactSection').classList.remove('hidden');
-        }
+// Función para regresar a la sección de referencia
+function goBackToReferenceSection() {
+    const assetsSection = document.getElementById('assetsSection');
+    const referenceSection = document.getElementById('referenceSection');
+    
+    assetsSection.classList.add('slide-out');
+    assetsSection.addEventListener('animationend', function handler() {
+        assetsSection.removeEventListener('animationend', handler);
+        assetsSection.classList.add('hidden');
+        assetsSection.classList.remove('slide-out');
+        
+        referenceSection.classList.remove('hidden');
+        referenceSection.classList.add('slide-in');
+        
+        referenceSection.addEventListener('animationend', function handler2() {
+            referenceSection.removeEventListener('animationend', handler2);
+            referenceSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
+
+// Función para ir a la sección de referencia
+function goToReferenceSection() {
+    const contactSection = document.getElementById('contactSection');
+    const referenceSection = document.getElementById('referenceSection');
+    
+    contactSection.classList.add('slide-out');
+    contactSection.addEventListener('animationend', function handler() {
+        contactSection.removeEventListener('animationend', handler);
+        contactSection.classList.add('hidden');
+        contactSection.classList.remove('slide-out');
+        
+        referenceSection.classList.remove('hidden');
+        referenceSection.classList.add('slide-in');
+        
+        referenceSection.addEventListener('animationend', function handler2() {
+            referenceSection.removeEventListener('animationend', handler2);
+            referenceSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
+
+
+// Función para regresar a la página de contacto
+function goBackToContactPage() {
+    const referenceSection = document.getElementById('referenceSection');
+    const contactSection = document.getElementById('contactSection');
+    
+    referenceSection.classList.add('slide-out');
+    referenceSection.addEventListener('animationend', function handler() {
+        referenceSection.removeEventListener('animationend', handler);
+        referenceSection.classList.add('hidden');
+        referenceSection.classList.remove('slide-out');
+        
+        contactSection.classList.remove('hidden');
+        contactSection.classList.add('slide-in');
+        
+        contactSection.addEventListener('animationend', function handler2() {
+            contactSection.removeEventListener('animationend', handler2);
+            contactSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
+
+// Función para ir de la página de bienvenida a la sección personal
+function goToPersonalSection() {
+    const welcomeSection = document.getElementById('welcomeSection');
+    const personalSection = document.getElementById('personalSection');
+    
+    welcomeSection.classList.add('slide-out');
+    welcomeSection.addEventListener('animationend', function handler() {
+        welcomeSection.removeEventListener('animationend', handler);
+        welcomeSection.classList.add('hidden');
+        welcomeSection.classList.remove('slide-out');
+        
+        personalSection.classList.remove('hidden');
+        personalSection.classList.add('slide-in');
+        
+        personalSection.addEventListener('animationend', function handler2() {
+            personalSection.removeEventListener('animationend', handler2);
+            personalSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
+
+
+// Función para ir a la página de contacto
+function goToContactPage() {
+    if (validatePersonalForm()) {
+        const personalSection = document.getElementById('personalSection');
+        const contactSection = document.getElementById('contactSection');
+        
+        personalSection.classList.add('slide-out');
+        personalSection.addEventListener('animationend', function handler() {
+            personalSection.removeEventListener('animationend', handler);
+            personalSection.classList.add('hidden');
+            personalSection.classList.remove('slide-out');
+            
+            contactSection.classList.remove('hidden');
+            contactSection.classList.add('slide-in');
+            
+            contactSection.addEventListener('animationend', function handler2() {
+                contactSection.removeEventListener('animationend', handler2);
+                contactSection.classList.remove('slide-in');
+            }, { once: true });
+        }, { once: true });
     }
+}
 
-    // Función para regresar de la página de contacto a la página de información personal
-    function goToPersonalPage() {
-        document.getElementById('contactSection').classList.add('hidden');
-        document.getElementById('personalSection').classList.remove('hidden');
-    }
+// Función para regresar a la página personal
+function goToPersonalPage() {
+    const contactSection = document.getElementById('contactSection');
+    const personalSection = document.getElementById('personalSection');
+    
+    contactSection.classList.add('slide-out');
+    contactSection.addEventListener('animationend', function handler() {
+        contactSection.removeEventListener('animationend', handler);
+        contactSection.classList.add('hidden');
+        contactSection.classList.remove('slide-out');
+        
+        personalSection.classList.remove('hidden');
+        personalSection.classList.add('slide-in');
+        
+        personalSection.addEventListener('animationend', function handler2() {
+            personalSection.removeEventListener('animationend', handler2);
+            personalSection.classList.remove('slide-in');
+        }, { once: true });
+    }, { once: true });
+}
+
 
     // Función para mostrar la sección del cónyuge/pareja si el estado civil es "Casado/a" o "Unión libre"
     function showPartnerSection() {
-        const civilStatus = document.getElementById('civilStatus').value;
-        const partnerSection = document.getElementById('partnerSection');
+           const civilStatus = document.getElementById('civilStatus').value;
+    const partnerSection = document.getElementById('partnerSection');
+    const partnerSignatureSection = document.getElementById('partnerSignatureSection');
 
-        if (civilStatus === "Casado/a" || civilStatus === "Unión libre") {
-            partnerSection.classList.remove('hidden');
-        } else {
-            partnerSection.classList.add('hidden');
+    if (civilStatus === "Casado/a" || civilStatus === "Unión libre") {
+        partnerSection.classList.remove('hidden');
+        partnerSignatureSection?.classList.remove('hidden');
+    } else {
+        partnerSection.classList.add('hidden');
+        partnerSignatureSection?.classList.add('hidden');
             // Limpiar los mensajes de error cuando se oculta la sección
             document.getElementById('partnerNameError').style.display = 'none';
             document.getElementById('partnerCountryError').style.display = 'none';
@@ -533,6 +826,76 @@
             clearImage('partnerDocument', 'partnerDocumentPreview', 'partnerDocumentText', 'partnerDocumentDeleteBtn');
         }
     }
+
+// Función para validar el formulario de préstamo
+function validateLoanForm() {
+    let isValid = true;
+
+    // Validar monto del préstamo
+    const loanAmount = document.getElementById('loanAmount').value;
+    if (!loanAmount || !loanAmount.match(/^\d+$/)) {
+        document.getElementById('loanAmountError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('loanAmountError').style.display = 'none';
+    }
+
+    // Validar selfie con documento
+    const selfieDocument = document.getElementById('selfieDocument').files.length;
+    if (!selfieDocument) {
+        document.getElementById('selfieDocumentError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('selfieDocumentError').style.display = 'none';
+    }
+
+    return isValid;
+}
+    // Función para validar el formulario de bienes
+function validateAssetsForm() {
+    let isValid = true;
+
+    // Validar nombre de la propiedad
+    const propertyName = document.getElementById('propertyName').value;
+    if (!propertyName) {
+        document.getElementById('propertyNameError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('propertyNameError').style.display = 'none';
+    }
+
+    // Validar documento de propiedad
+    const propertyDocument = document.getElementById('propertyDocument').files.length;
+    if (!propertyDocument) {
+        document.getElementById('propertyDocumentError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('propertyDocumentError').style.display = 'none';
+    }
+
+    // Validar firma del solicitante
+    const signature = document.getElementById('signature').files.length;
+    if (!signature) {
+        document.getElementById('signatureError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('signatureError').style.display = 'none';
+    }
+
+    // Validar firma del cónyuge si aplica
+    const civilStatus = document.getElementById('civilStatus').value;
+    if (civilStatus === "Casado/a" || civilStatus === "Unión libre") {
+        const partnerSignature = document.getElementById('partnerSignature').files.length;
+        if (!partnerSignature) {
+            document.getElementById('partnerSignatureError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('partnerSignatureError').style.display = 'none';
+        }
+    }
+
+    return isValid;
+}
 
     // Validar formulario de información personal
     function validatePersonalForm() {
@@ -740,24 +1103,56 @@
             img.src = "https://i.postimg.cc/8c5F6Vr8/image.jpg";
             img.style.opacity = "0.5";
         }
+     else if (inputId === 'propertyDocument') {
+    img.src = "https://i.ytimg.com/vi/6eCnYN9jcUY/maxresdefault.jpg";
+    img.style.opacity = "0.5";
+} else if (inputId === 'signature') {
+    img.src = "https://i.pinimg.com/736x/8e/6e/76/8e6e766676216436b2fce90b8326fd81.jpg";
+    img.style.opacity = "0.5";
+} else if (inputId === 'partnerSignature') {
+    img.src = "https://www.consumer.es/app/uploads/fly-images/110784/img_firma-3-1200x550-cc.jpg";
+    img.style.opacity = "0.5";
+} else if (inputId === 'selfieDocument') {
+    img.src = "https://gadmaapps.ambato.gob.ec:9001/apex/gadmapps/r/102/files/static/v250/selfiecedula.jpg";
+    img.style.opacity = "0.5";
+}
     }
 
-    // Event listeners para los formularios
+
+// Al final, los event listeners dentro de DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listener para el formulario de contacto
     document.getElementById('contactForm').addEventListener('submit', function(event) {
         event.preventDefault();
         if (validateContactForm()) {
-            document.getElementById('contactSection').classList.add('hidden');
-            document.getElementById('referenceSection').classList.remove('hidden');
+            goToReferenceSection();
         }
     });
 
+    // Event listener para el formulario de referencia
     document.getElementById('referenceForm').addEventListener('submit', function(event) {
         event.preventDefault();
         if (validateReferenceForm()) {
-            // Aquí puedes agregar el código para enviar el formulario completo
+            goToAssetsSection();
+        }
+    });
+
+    // Event listener para el formulario de bienes
+    document.getElementById('assetsForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateAssetsForm()) {
+            goToLoanSection();
+        }
+    });
+
+    // Event listener para el formulario de préstamo
+    document.getElementById('loanForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateLoanForm()) {
             console.log('Formulario completo válido - Listo para enviar');
         }
     });
+});
 </script>
 </body>
 </html>
